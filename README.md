@@ -112,4 +112,24 @@ python3 vmperf.py report --baseline results/vmware --candidate results/openshift
 
 The terminal report shows medians and `(candidate / baseline) - 1`. `--verbose` shows individual runs. Higher throughput and IOPS are better; lower latency is better. Latency is the median of per-run fio completion-latency percentiles. Incomplete runs or mismatched settings cause a nonzero exit; no performance thresholds are assumed.
 
+## fio workload profiles
+
+| Profile | `--rw` | `--bs` | `--iodepth` |
+|---|---|---|---:|
+| Sequential read | `read` | `1m` | 8 |
+| Sequential write | `write` | `1m` | 8 |
+| Random read | `randread` | `4k` | 1 |
+
+All measured profiles use these options by default, in addition to their profile-specific settings:
+
+```text
+--ioengine=libaio --direct=1 --numjobs=1 --refill_buffers=1
+--output-format=json --filename=<temporary scratch file> --size=4096m
+--allow_file_create=0 --time_based --runtime=60 --ramp_time=15
+```
+
+Before measurement, fio fills the scratch file with a sequential write (`--rw=write --bs=1m --iodepth=8 --end_fsync=1`). This preparation step is not measured. The measured sequential write uses direct I/O but does not call `fsync` on each write.
+
+By default, each profile runs three times, with 60 seconds of measurement after a 15-second warm-up. The VMware pilot used the same profiles with a 1 GiB file, 10 seconds of measurement, and a 2-second warm-up. The suite does not run random-write or mixed read/write profiles.
+
 See the [VMware pilot results](docs/vmware-pilot.md) for a real run using shorter profiles. The runner does not depend on that lab or its results.

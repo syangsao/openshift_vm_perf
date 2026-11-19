@@ -2,6 +2,19 @@
 
 Run `vmperf.py` inside the Linux VM before and after migration. Run the report on your workstation. No Python packages required.
 
+```mermaid
+flowchart TD
+    A["Prepare Linux guest tools and scratch volume"] --> B["Run VMware baseline inside the guest"]
+    P["Fixed external iperf3 peer"] -. "same endpoint" .-> B
+    B --> C["Copy VMware results to workstation"]
+    C --> D["Migrate VM to OpenShift Virtualization"]
+    D --> E["Verify scratch mount and rerun the same profiles"]
+    P -. "same endpoint" .-> E
+    E --> F["Copy OpenShift results to workstation"]
+    C --> G["Compare both result directories in the terminal"]
+    F --> G
+```
+
 ## 1. Install and verify the guest tools
 
 Use your distro's package manager on the VMware guest:

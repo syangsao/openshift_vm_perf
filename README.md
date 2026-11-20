@@ -2,6 +2,8 @@
 
 Run `vmperf.py` inside the Linux VM before and after migration. Run the report on your workstation. No Python packages required.
 
+For a standalone checklist covering guest packages, scratch storage, peer connectivity, and result collection, see the [setup runbook](docs/setup-runbook.md).
+
 ```mermaid
 flowchart TD
     A["Prepare Linux guest tools and scratch volume"] --> B["Run VMware baseline inside the guest"]
